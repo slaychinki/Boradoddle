@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KiraBora</title>
+  
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Clean Top Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-mark">KB</div>
+      <div>
+        <h1 class="app-name">KiraBora</h1>
+        <p class="user-status" id="userStatusLabel">Guest Member</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="kst-badge" id="kstClock">KST --:--</span>
+      <button class="login-chip" onclick="openLoginModal()" id="authActionBtn">Login</button>
+    </div>
+  </header>
+
+  <!-- Main App Shell -->
+  <main class="main-body">
+
+    <!-- 1. KIRA KOREAN LEARNING HUB -->
+    <section id="tab-korean" class="tab-pane active">
+      <div class="pane-header">
+        <h2>Korean Practice</h2>
+        <span class="step-pill" id="cardProgress">1 / 18</span>
+      </div>
+
+      <!-- Clean Category Filter -->
+      <div class="filter-strip">
+        <button class="chip active" onclick="setCategory('all', this)">All</button>
+        <button class="chip" onclick="setCategory('vowel', this)">Vowels</button>
+        <button class="chip" onclick="setCategory('consonant', this)">Consonants</button>
+        <button class="chip" onclick="setCategory('words', this)">BTS Words</button>
+      </div>
+
+      <!-- Kira Clean Card -->
+      <div class="kira-card">
+        <div class="kira-top">
+          <span class="category-tag" id="cardCat">Basic Vowel</span>
+          <button class="audio-btn" onclick="speakCurrent(true)">🔊 Replay</button>
+        </div>
+
+        <!-- Interactive Writing Canvas -->
+        <div class="canvas-box">
+          <canvas id="writeCanvas" width="320" height="200"></canvas>
+          <div class="canvas-guide" id="canvasLetter">ㅏ</div>
+          <button class="canvas-reset" onclick="resetCanvas()">Clear</button>
+        </div>
+
+        <!-- Stroke Validation Feedback -->
+        <div class="grade-pill" id="strokeGrade">Draw the letter above with your finger</div>
+
+        <!-- Word Info -->
+        <div class="info-block">
+          <div class="rom-label" id="cardRom">[ a ]</div>
+          <div class="translation-row">
+            <span class="trans-en" id="cardEn">Like 'a' in father</span>
+            <span class="trans-divider">•</span>
+            <span class="trans-hi" id="cardHi">हिन्दी: 'आ'</span>
+          </div>
+          <p class="context-text" id="cardContext">Basic foundation vowel in Hangul.</p>
+        </div>
+
+        <!-- Speech Pronunciation Test -->
+        <div class="speech-block">
+          <button class="mic-button" id="micTriggerBtn" onclick="runSpeechTest()">
+            <span class="mic-icon">🎙️</span> Test Pronunciation
+          </button>
+          <div class="speech-status" id="speechStatus">Tap the mic and speak clearly</div>
+        </div>
+      </div>
+
+      <!-- Next / Prev Controls -->
+      <div class="control-row">
+        <button class="btn-secondary" onclick="prevCard()">Previous</button>
+        <button class="btn-primary" onclick="nextCard()">Next Letter →</button>
+      </div>
+    </section>
+
+    <!-- 2. VOTING TRACKER -->
+    <section id="tab-voting" class="tab-pane">
+      <div class="pane-header">
+        <h2>Active Voting</h2>
+        <span class="badge-sub">Live Updates</span>
+      </div>
+      <p class="pane-desc">Official polls and platform voting links.</p>
+      
+      <div id="votingList" class="cards-list"></div>
+    </section>
+
+    <!-- 3. CALENDAR -->
+    <section id="tab-calendar" class="tab-pane">
+      <div class="pane-header">
+        <h2>Fandom Calendar</h2>
+        <span class="badge-sub">Milestones</span>
+      </div>
+
+      <div class="calendar-wrapper">
+        <div class="month-nav">
+          <button class="month-btn" onclick="prevMonth()">‹</button>
+          <h3 id="calendarMonthTitle">September 2026</h3>
+          <button class="month-btn" onclick="nextMonth()">›</button>
+        </div>
+        <div class="days-row">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+
+      <div class="event-details" id="eventCard">
+        <div class="event-type" id="eventTag">Select a Date</div>
+        <h4 id="eventTitle">Tap any marked date</h4>
+        <p id="eventDescription">Track member birthdays, official anniversaries, and voting deadlines.</p>
+      </div>
+    </section>
+
+    <!-- 4. DAILY TASKS -->
+    <section id="tab-tasks" class="tab-pane">
+      <div class="pane-header">
+        <h2>Daily Tasks</h2>
+        <span class="badge-sub">Streaks</span>
+      </div>
+
+      <div class="task-input-box">
+        <input type="text" id="taskInput" placeholder="Add a new task..." />
+        <button onclick="addTask()">Add</button>
+      </div>
+
+      <ul class="task-list" id="taskList"></ul>
+    </section>
+
+    <!-- 5. ADMIN PANEL (Only visible to you) -->
+    <section id="tab-admin" class="tab-pane">
+      <div class="pane-header">
+        <h2>Admin Management</h2>
+        <span class="badge-admin">LEADER</span>
+      </div>
+      <p class="pane-desc">Publish voting links or vocabulary directly to members.</p>
+
+      <div class="admin-panel-card">
+        <h3>Post Voting Link</h3>
+        <input type="text" id="admTitle" placeholder="Poll Title (e.g. MAMA 2026)" />
+        <input type="text" id="admPlatform" placeholder="Platform (e.g. Mnet Plus)" />
+        <input type="text" id="admDeadline" placeholder="Deadline (e.g. 00:00 KST Daily)" />
+        <input type="text" id="admUrl" placeholder="Direct URL (https://...)" />
+        <label class="checkbox-line">
+          <input type="checkbox" id="admUrgent" /> Mark as Urgent
+        </label>
+        <button class="btn-primary full" onclick="adminAddVote()">Publish Vote</button>
+      </div>
+
+      <div class="admin-panel-card">
+        <h3>Add Korean Word</h3>
+        <input type="text" id="admHangul" placeholder="Hangul (e.g. 사랑)" />
+        <input type="text" id="admRom" placeholder="Romanization (e.g. [Sarang])" />
+        <input type="text" id="admEn" placeholder="English Meaning" />
+        <input type="text" id="admHi" placeholder="Hindi Meaning" />
+        <input type="text" id="admContext" placeholder="Context / Note" />
+        <button class="btn-primary full" onclick="adminAddWord()">Add to Learning Deck</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="authModal" onclick="closeModalOnBg(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Member Sign-In</h3>
+        <button class="modal-close-btn" onclick="closeLoginModal()">✕</button>
+      </div>
+      <p class="modal-sub">Sign in to sync daily tasks. If you are the leader, enter your key.</p>
+      
+      <input type="text" id="authNameInput" placeholder="Your Name or Handle" />
+      <input type="password" id="authKeyInput" placeholder="Passkey (Optional)" />
+
+      <button class="btn-primary full" onclick="processLogin()">Continue</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-bar">
+    <button class="nav-btn active" onclick="switchTab('korean', this)">
+      <span class="nav-icon">🇰🇷</span>
+      <span class="nav-label">Learn</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('voting', this)">
+      <span class="nav-icon">🗳️</span>
+      <span class="nav-label">Voting</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('calendar', this)">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Calendar</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('tasks', this)">
+      <span class="nav-icon">✓</span>
+      <span class="nav-label">Tasks</span>
+    </button>
+    <button class="nav-btn" id="adminBarBtn" style="display: none;" onclick="switchTab('admin', this)">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Admin</span>
+    </button>
+  </nav>
+
+  <script src="./script.js"></script>
+</body>
+  </html>
+  
