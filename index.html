@@ -5,19 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>KiraBora</title>
   
-  <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#FFFFFF" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=2" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Clean Top Bar -->
+  <!-- Top App Header -->
   <header class="app-header">
     <div class="header-left">
       <div class="logo-mark">KB</div>
@@ -28,46 +24,41 @@
     </div>
     <div class="header-right">
       <span class="kst-badge" id="kstClock">KST --:--</span>
-      <button class="login-chip" onclick="openLoginModal()" id="authActionBtn">Login</button>
+      <button class="login-chip" id="authActionBtn">Login</button>
     </div>
   </header>
 
-  <!-- Main App Shell -->
+  <!-- Main Body Content -->
   <main class="main-body">
 
-    <!-- 1. KIRA KOREAN LEARNING HUB -->
+    <!-- TAB 1: KOREAN PRACTICE (Default View) -->
     <section id="tab-korean" class="tab-pane active">
       <div class="pane-header">
         <h2>Korean Practice</h2>
         <span class="step-pill" id="cardProgress">1 / 18</span>
       </div>
 
-      <!-- Clean Category Filter -->
       <div class="filter-strip">
-        <button class="chip active" onclick="setCategory('all', this)">All</button>
-        <button class="chip" onclick="setCategory('vowel', this)">Vowels</button>
-        <button class="chip" onclick="setCategory('consonant', this)">Consonants</button>
-        <button class="chip" onclick="setCategory('words', this)">BTS Words</button>
+        <button class="chip active" data-cat="all">All</button>
+        <button class="chip" data-cat="vowel">Vowels</button>
+        <button class="chip" data-cat="consonant">Consonants</button>
+        <button class="chip" data-cat="words">BTS Words</button>
       </div>
 
-      <!-- Kira Clean Card -->
       <div class="kira-card">
         <div class="kira-top">
           <span class="category-tag" id="cardCat">Basic Vowel</span>
-          <button class="audio-btn" onclick="speakCurrent(true)">🔊 Replay</button>
+          <button class="audio-btn" id="replayAudioBtn">🔊 Replay</button>
         </div>
 
-        <!-- Interactive Writing Canvas -->
         <div class="canvas-box">
           <canvas id="writeCanvas" width="320" height="200"></canvas>
           <div class="canvas-guide" id="canvasLetter">ㅏ</div>
-          <button class="canvas-reset" onclick="resetCanvas()">Clear</button>
+          <button class="canvas-reset" id="clearCanvasBtn">Clear</button>
         </div>
 
-        <!-- Stroke Validation Feedback -->
         <div class="grade-pill" id="strokeGrade">Draw the letter above with your finger</div>
 
-        <!-- Word Info -->
         <div class="info-block">
           <div class="rom-label" id="cardRom">[ a ]</div>
           <div class="translation-row">
@@ -78,34 +69,31 @@
           <p class="context-text" id="cardContext">Basic foundation vowel in Hangul.</p>
         </div>
 
-        <!-- Speech Pronunciation Test -->
         <div class="speech-block">
-          <button class="mic-button" id="micTriggerBtn" onclick="runSpeechTest()">
+          <button class="mic-button" id="micTriggerBtn">
             <span class="mic-icon">🎙️</span> Test Pronunciation
           </button>
           <div class="speech-status" id="speechStatus">Tap the mic and speak clearly</div>
         </div>
       </div>
 
-      <!-- Next / Prev Controls -->
       <div class="control-row">
-        <button class="btn-secondary" onclick="prevCard()">Previous</button>
-        <button class="btn-primary" onclick="nextCard()">Next Letter →</button>
+        <button class="btn-secondary" id="prevCardBtn">Previous</button>
+        <button class="btn-primary" id="nextCardBtn">Next Letter →</button>
       </div>
     </section>
 
-    <!-- 2. VOTING TRACKER -->
+    <!-- TAB 2: ACTIVE VOTING -->
     <section id="tab-voting" class="tab-pane">
       <div class="pane-header">
         <h2>Active Voting</h2>
         <span class="badge-sub">Live Updates</span>
       </div>
-      <p class="pane-desc">Official polls and platform voting links.</p>
-      
+      <p class="pane-desc">Tap direct buttons to open poll or app.</p>
       <div id="votingList" class="cards-list"></div>
     </section>
 
-    <!-- 3. CALENDAR -->
+    <!-- TAB 3: CALENDAR -->
     <section id="tab-calendar" class="tab-pane">
       <div class="pane-header">
         <h2>Fandom Calendar</h2>
@@ -114,9 +102,9 @@
 
       <div class="calendar-wrapper">
         <div class="month-nav">
-          <button class="month-btn" onclick="prevMonth()">‹</button>
+          <button class="month-btn" id="calPrevBtn">‹</button>
           <h3 id="calendarMonthTitle">September 2026</h3>
-          <button class="month-btn" onclick="nextMonth()">›</button>
+          <button class="month-btn" id="calNextBtn">›</button>
         </div>
         <div class="days-row">
           <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
@@ -131,7 +119,7 @@
       </div>
     </section>
 
-    <!-- 4. DAILY TASKS -->
+    <!-- TAB 4: TASKS -->
     <section id="tab-tasks" class="tab-pane">
       <div class="pane-header">
         <h2>Daily Tasks</h2>
@@ -140,13 +128,13 @@
 
       <div class="task-input-box">
         <input type="text" id="taskInput" placeholder="Add a new task..." />
-        <button onclick="addTask()">Add</button>
+        <button id="addTaskBtn">Add</button>
       </div>
 
       <ul class="task-list" id="taskList"></ul>
     </section>
 
-    <!-- 5. ADMIN PANEL (Only visible to you) -->
+    <!-- TAB 5: ADMIN PANEL -->
     <section id="tab-admin" class="tab-pane">
       <div class="pane-header">
         <h2>Admin Management</h2>
@@ -163,7 +151,7 @@
         <label class="checkbox-line">
           <input type="checkbox" id="admUrgent" /> Mark as Urgent
         </label>
-        <button class="btn-primary full" onclick="adminAddVote()">Publish Vote</button>
+        <button class="btn-primary full" id="adminPublishVoteBtn">Publish Vote</button>
       </div>
 
       <div class="admin-panel-card">
@@ -173,53 +161,498 @@
         <input type="text" id="admEn" placeholder="English Meaning" />
         <input type="text" id="admHi" placeholder="Hindi Meaning" />
         <input type="text" id="admContext" placeholder="Context / Note" />
-        <button class="btn-primary full" onclick="adminAddWord()">Add to Learning Deck</button>
+        <button class="btn-primary full" id="adminAddWordBtn">Add to Learning Deck</button>
       </div>
     </section>
 
   </main>
 
   <!-- Login Modal -->
-  <div class="modal-overlay" id="authModal" onclick="closeModalOnBg(event)">
+  <div class="modal-overlay" id="authModal">
     <div class="modal-card">
       <div class="modal-header">
         <h3>Member Sign-In</h3>
-        <button class="modal-close-btn" onclick="closeLoginModal()">✕</button>
+        <button class="modal-close-btn" id="closeModalBtn">✕</button>
       </div>
-      <p class="modal-sub">Sign in to sync daily tasks. If you are the leader, enter your key.</p>
+      <p class="modal-sub">Sign in to save tasks. Enter your Secret Key if you are the leader.</p>
       
       <input type="text" id="authNameInput" placeholder="Your Name or Handle" />
       <input type="password" id="authKeyInput" placeholder="Passkey (Optional)" />
 
-      <button class="btn-primary full" onclick="processLogin()">Continue</button>
+      <button class="btn-primary full" id="loginSubmitBtn">Continue</button>
     </div>
   </div>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-bar">
-    <button class="nav-btn active" onclick="switchTab('korean', this)">
+    <button class="nav-btn active" data-tab="korean">
       <span class="nav-icon">🇰🇷</span>
       <span class="nav-label">Learn</span>
     </button>
-    <button class="nav-btn" onclick="switchTab('voting', this)">
+    <button class="nav-btn" data-tab="voting">
       <span class="nav-icon">🗳️</span>
       <span class="nav-label">Voting</span>
     </button>
-    <button class="nav-btn" onclick="switchTab('calendar', this)">
+    <button class="nav-btn" data-tab="calendar">
       <span class="nav-icon">📅</span>
       <span class="nav-label">Calendar</span>
     </button>
-    <button class="nav-btn" onclick="switchTab('tasks', this)">
+    <button class="nav-btn" data-tab="tasks">
       <span class="nav-icon">✓</span>
       <span class="nav-label">Tasks</span>
     </button>
-    <button class="nav-btn" id="adminBarBtn" style="display: none;" onclick="switchTab('admin', this)">
+    <button class="nav-btn" id="adminBarBtn" style="display: none;" data-tab="admin">
       <span class="nav-icon">⚙️</span>
       <span class="nav-label">Admin</span>
     </button>
   </nav>
 
-  <script src="./script.js"></script>
+  <!-- Self-Contained Safe Script Execution -->
+  <script>
+    // 0. Kill any old Service Worker caches immediately
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let reg of registrations) {
+          reg.unregister();
+        }
+      });
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          for (let name of names) caches.delete(name);
+        });
+      }
+    }
+
+    // 1. Korea Standard Time Clock
+    function updateKST() {
+      try {
+        const kst = new Intl.DateTimeFormat([], {
+          timeZone: 'Asia/Seoul',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date());
+        document.getElementById('kstClock').textContent = `KST ${kst}`;
+      } catch (e) {
+        document.getElementById('kstClock').textContent = 'KST Live';
+      }
+    }
+    setInterval(updateKST, 1000);
+    updateKST();
+
+    // 2. Navigation Tab Switcher
+    function switchTab(tabKey) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const targetPane = document.getElementById('tab-' + tabKey);
+      if (targetPane) targetPane.classList.add('active');
+
+      const targetBtn = document.querySelector(`.nav-btn[data-tab="${tabKey}"]`);
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.getAttribute('data-tab');
+        switchTab(tabKey);
+      });
+    });
+
+    // 3. Authentication & Leader Verification
+    const PRIVATE_ADMIN_KEY = "BORA_LEADER_77";
+    let userSession = JSON.parse(localStorage.getItem('kb_session')) || { name: "Guest", isAdmin: false };
+
+    function refreshAuthUI() {
+      const label = document.getElementById('userStatusLabel');
+      const btn = document.getElementById('authActionBtn');
+      const adminTab = document.getElementById('adminBarBtn');
+
+      if (userSession.isAdmin) {
+        label.textContent = `Leader: ${userSession.name}`;
+        btn.textContent = 'Logout';
+        adminTab.style.display = 'flex';
+      } else if (userSession.name !== "Guest") {
+        label.textContent = `Member: ${userSession.name}`;
+        btn.textContent = 'Logout';
+        adminTab.style.display = 'none';
+      } else {
+        label.textContent = 'Guest Member';
+        btn.textContent = 'Login';
+        adminTab.style.display = 'none';
+      }
+    }
+
+    const modal = document.getElementById('authModal');
+    document.getElementById('authActionBtn').addEventListener('click', () => {
+      if (userSession.name !== "Guest") {
+        if (confirm("Log out from your account?")) {
+          userSession = { name: "Guest", isAdmin: false };
+          localStorage.setItem('kb_session', JSON.stringify(userSession));
+          refreshAuthUI();
+          switchTab('korean');
+        }
+      } else {
+        modal.classList.add('open');
+      }
+    });
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+
+    document.getElementById('loginSubmitBtn').addEventListener('click', () => {
+      const name = document.getElementById('authNameInput').value.trim();
+      const key = document.getElementById('authKeyInput').value.trim();
+
+      if (!name) {
+        alert("Please enter a name to continue.");
+        return;
+      }
+
+      const isAdmin = (key === PRIVATE_ADMIN_KEY);
+      userSession = { name, isAdmin };
+      localStorage.setItem('kb_session', JSON.stringify(userSession));
+      modal.classList.remove('open');
+      refreshAuthUI();
+
+      if (isAdmin) {
+        alert("👑 Leader verified! Admin tools unlocked on bottom bar.");
+      } else {
+        alert(`💜 Welcome, ${name}!`);
+      }
+    });
+
+    // 4. Kira Korean Learning Deck
+    const baseDeck = [
+      { type: "vowel", cat: "Vowel", kr: "ㅏ", rom: "[ a ]", en: "Like 'a' in father", hi: "आ ध्वनि", ctx: "Vertical stroke down, short right tick." },
+      { type: "vowel", cat: "Vowel", kr: "ㅑ", rom: "[ ya ]", en: "Like 'ya' in yard", hi: "या ध्वनि", ctx: "Vertical stroke down, two right ticks." },
+      { type: "vowel", cat: "Vowel", kr: "ㅓ", rom: "[ eo ]", en: "Like 'u' in cup", hi: "अ ध्वनि (खुले गले से)", ctx: "Short tick pointing left into vertical line." },
+      { type: "vowel", cat: "Vowel", kr: "ㅗ", rom: "[ o ]", en: "Like 'o' in open", hi: "ओ ध्वनि (गोल होंठ)", ctx: "Upright tick with a flat baseline." },
+      { type: "vowel", cat: "Vowel", kr: "ㅜ", rom: "[ u ]", en: "Like 'oo' in moon", hi: "ऊ ध्वनि", ctx: "Horizontal baseline, stroke down." },
+      { type: "vowel", cat: "Vowel", kr: "ㅡ", rom: "[ eu ]", en: "Flat lips 'u' sound", hi: "उ (सपाट होंठ)", ctx: "Single flat horizontal stroke." },
+      { type: "vowel", cat: "Vowel", kr: "ㅣ", rom: "[ i ]", en: "Like 'ee' in see", hi: "ई ध्वनि", ctx: "Single upright vertical stroke." },
+      { type: "consonant", cat: "Consonant", kr: "ㄱ", rom: "[ g / k ]", en: "G/K Gun shape", hi: "ग / क", ctx: "Drawn across then down." },
+      { type: "consonant", cat: "Consonant", kr: "ㄴ", rom: "[ n ]", en: "N sound", hi: "न ध्वनि", ctx: "Down then across." },
+      { type: "consonant", cat: "Consonant", kr: "ㄷ", rom: "[ d / t ]", en: "D/T Door shape", hi: "द / त", ctx: "Top bar, then down and across." },
+      { type: "consonant", cat: "Consonant", kr: "ㅁ", rom: "[ m ]", en: "M Mouth shape", hi: "म ध्वनि", ctx: "Four-stroke square." },
+      { type: "consonant", cat: "Consonant", kr: "ㅂ", rom: "[ b / p ]", en: "B/P Bucket shape", hi: "ब / प", ctx: "Two vertical lines, bottom bar, middle bar." },
+      { type: "consonant", cat: "Consonant", kr: "ㅅ", rom: "[ s ]", en: "S sound", hi: "स ध्वनि", ctx: "Left slant, then right slant." },
+      { type: "consonant", cat: "Consonant", kr: "ㅇ", rom: "[ ng / silent ]", en: "Circle (Silent start)", hi: "अंग (शुरुआत में मौन)", ctx: "Drawn as a counter-clockwise circle." },
+      { type: "words", cat: "BTS Slang", kr: "보라해", rom: "[ Borahae ]", en: "I purple you", hi: "हमेशा प्यार और भरोसा", ctx: "Coined by Kim Taehyung (V)." },
+      { type: "words", cat: "BTS Slang", kr: "아포방포", rom: "[ Apobangpo ]", en: "ARMY Forever, BTS Forever", hi: "आर्मी फॉरएवर, बैंगटन फॉरएवर", ctx: "Coined by Jungkook." },
+      { type: "words", cat: "Lyric Core", kr: "보고싶다", rom: "[ Bogo sipda ]", en: "I miss you", hi: "मुझे आपकी याद आती है", ctx: "Opening line of Spring Day." }
+    ];
+
+    let customWords = JSON.parse(localStorage.getItem('kb_custom_words')) || [];
+    let currentDeck = [...baseDeck, ...customWords];
+    let deckIdx = 0;
+
+    function speakCurrent() {
+      if (!currentDeck.length) return;
+      const text = currentDeck[deckIdx].kr;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = 0.82;
+        window.speechSynthesis.speak(u);
+      }
+    }
+
+    function loadCard(autoPlayAudio = false) {
+      if (!currentDeck.length) return;
+      const item = currentDeck[deckIdx];
+
+      document.getElementById('cardCat').textContent = item.cat;
+      document.getElementById('cardProgress').textContent = `${deckIdx + 1} / ${currentDeck.length}`;
+      document.getElementById('canvasLetter').textContent = item.kr;
+      document.getElementById('cardRom').textContent = item.rom;
+      document.getElementById('cardEn').textContent = item.en;
+      document.getElementById('cardHi').textContent = item.hi;
+      document.getElementById('cardContext').textContent = item.ctx;
+      document.getElementById('speechStatus').textContent = "Tap the mic and speak clearly";
+      document.getElementById('strokeGrade').textContent = "Draw the letter above with your finger";
+      document.getElementById('strokeGrade').style.color = "var(--text-muted)";
+
+      resetCanvas();
+      if (autoPlayAudio) speakCurrent();
+    }
+
+    document.getElementById('replayAudioBtn').addEventListener('click', () => speakCurrent());
+    document.getElementById('nextCardBtn').addEventListener('click', () => {
+      deckIdx = (deckIdx + 1) % currentDeck.length;
+      loadCard(true);
+    });
+    document.getElementById('prevCardBtn').addEventListener('click', () => {
+      deckIdx = (deckIdx - 1 + currentDeck.length) % currentDeck.length;
+      loadCard(true);
+    });
+
+    document.querySelectorAll('.filter-strip .chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-strip .chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const cat = chip.getAttribute('data-cat');
+        const full = [...baseDeck, ...customWords];
+        currentDeck = (cat === 'all') ? full : full.filter(item => item.type === cat);
+        deckIdx = 0;
+        loadCard(true);
+      });
+    });
+
+    // Touch Canvas
+    const canvas = document.getElementById('writeCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let drawnCount = 0;
+
+    function startDraw(e) {
+      drawing = true;
+      draw(e);
+    }
+
+    function endDraw() {
+      if (!drawing) return;
+      drawing = false;
+      ctx.beginPath();
+      const grade = document.getElementById('strokeGrade');
+      if (drawnCount > 30) {
+        grade.textContent = "✨ Great stroke! Accurate tracing.";
+        grade.style.color = "var(--primary)";
+      } else if (drawnCount > 8) {
+        grade.textContent = "👍 Good start, complete the full letter.";
+        grade.style.color = "var(--text-main)";
+      }
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const x = (clientX - rect.left) * (canvas.width / rect.width);
+      const y = (clientY - rect.top) * (canvas.height / rect.height);
+
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#7C3AED';
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      drawnCount++;
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchend', endDraw);
+    canvas.addEventListener('touchmove', draw, { passive: false });
+
+    function resetCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawnCount = 0;
+    }
+    document.getElementById('clearCanvasBtn').addEventListener('click', resetCanvas);
+
+    // Pronunciation Test
+    document.getElementById('micTriggerBtn').addEventListener('click', () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition works best in Google Chrome on Android.");
+        return;
+      }
+      const rec = new SpeechRecognition();
+      rec.lang = 'ko-KR';
+      rec.interimResults = false;
+
+      const btn = document.getElementById('micTriggerBtn');
+      const status = document.getElementById('speechStatus');
+      btn.classList.add('active');
+      status.textContent = "Listening... Speak the Korean word now.";
+
+      rec.onresult = (evt) => {
+        btn.classList.remove('active');
+        const heard = evt.results[0][0].transcript.trim();
+        const target = currentDeck[deckIdx].kr;
+        if (heard.includes(target) || target.includes(heard)) {
+          status.innerHTML = `✅ <b>Correct!</b> Heard: "${heard}"`;
+          status.style.color = "var(--accent-green)";
+        } else {
+          status.innerHTML = `⚠️ Heard "${heard}". Target is "${target}". Try again.`;
+          status.style.color = "var(--text-main)";
+        }
+      };
+
+      rec.onerror = () => {
+        btn.classList.remove('active');
+        status.textContent = "Didn't hear clearly. Tap to retry.";
+      };
+      rec.start();
+    });
+
+    // 5. Voting Feed
+    let votesData = JSON.parse(localStorage.getItem('kb_votes')) || [
+      { title: "MAMA Awards: Worldwide Fans' Choice", platform: "Mnet Plus", deadline: "Daily Reset 00:00 KST", urgent: true, url: "https://www.mnetplus.world" },
+      { title: "Idol Champ: Monthly Global Artist Vote", platform: "Idol Champ App", deadline: "Collect free daily hearts", urgent: false, url: "https://play.google.com/store/apps/details?id=com.nwz.ichamp" },
+      { title: "Choeaedol: Member Charity Banner", platform: "Choeaedol", deadline: "Drop daily hearts before reset", urgent: true, url: "https://play.google.com/store/apps/details?id=net.ib.mn" }
+    ];
+
+    function renderVotes() {
+      const c = document.getElementById('votingList');
+      c.innerHTML = votesData.map(v => `
+        <div class="vote-item">
+          <div class="vote-meta-line">
+            <span class="platform-tag">${v.platform}</span>
+            ${v.urgent ? '<span class="urgent-badge">URGENT</span>' : ''}
+          </div>
+          <div class="vote-title">${v.title}</div>
+          <div class="vote-sub">⏳ ${v.deadline}</div>
+          <a href="${v.url}" target="_blank" rel="noopener noreferrer" class="vote-link-btn">
+            Open & Cast Vote ↗
+          </a>
+        </div>
+      `).join('');
+    }
+
+    // 6. Admin Submission
+    document.getElementById('adminPublishVoteBtn').addEventListener('click', () => {
+      const title = document.getElementById('admTitle').value.trim();
+      const platform = document.getElementById('admPlatform').value.trim();
+      const deadline = document.getElementById('admDeadline').value.trim();
+      const url = document.getElementById('admUrl').value.trim();
+      const urgent = document.getElementById('admUrgent').checked;
+
+      if (!title || !platform || !url) {
+        alert("Please fill in title, platform, and link.");
+        return;
+      }
+      votesData.unshift({ title, platform, deadline: deadline || "Active", urgent, url });
+      localStorage.setItem('kb_votes', JSON.stringify(votesData));
+      renderVotes();
+      alert("Vote posted successfully.");
+      document.getElementById('admTitle').value = '';
+      document.getElementById('admPlatform').value = '';
+      document.getElementById('admDeadline').value = '';
+      document.getElementById('admUrl').value = '';
+      document.getElementById('admUrgent').checked = false;
+    });
+
+    document.getElementById('adminAddWordBtn').addEventListener('click', () => {
+      const kr = document.getElementById('admHangul').value.trim();
+      const rom = document.getElementById('admRom').value.trim();
+      const en = document.getElementById('admEn').value.trim();
+      const hi = document.getElementById('admHi').value.trim();
+      const ctx = document.getElementById('admContext').value.trim();
+
+      if (!kr || !rom || !en) {
+        alert("Please provide Hangul, Romanization, and English.");
+        return;
+      }
+      customWords.push({ type: "words", cat: "Custom Word", kr, rom, en, hi: hi || "", ctx: ctx || "Added by leader" });
+      localStorage.setItem('kb_custom_words', JSON.stringify(customWords));
+      currentDeck = [...baseDeck, ...customWords];
+      alert("Word added to deck.");
+      document.getElementById('admHangul').value = '';
+      document.getElementById('admRom').value = '';
+      document.getElementById('admEn').value = '';
+      document.getElementById('admHi').value = '';
+      document.getElementById('admContext').value = '';
+    });
+
+    // 7. Calendar
+    let calYear = 2026;
+    let calMonth = 8;
+    const eventsMap = {
+      "2026-08-01": { title: "Jungkook Birthday", desc: "Golden Maknae celebration." },
+      "2026-08-12": { title: "RM Birthday", desc: "Kim Namjoon celebration." },
+      "2026-09-13": { title: "Jimin Birthday", desc: "Park Jimin charity stream." },
+      "2026-11-04": { title: "Jin Birthday", desc: "Worldwide Handsome celebration." },
+      "2026-11-30": { title: "V Birthday", desc: "Kim Taehyung birthday." },
+      "2026-05-13": { title: "BTS Anniversary", desc: "Happy 13th Debut Anniversary." }
+    };
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+    function renderCalendar() {
+      document.getElementById('calendarMonthTitle').textContent = `${monthNames[calMonth]} ${calYear}`;
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        const blank = document.createElement('div');
+        grid.appendChild(blank);
+      }
+      for (let d = 1; d <= totalDays; d++) {
+        const day = document.createElement('div');
+        day.className = 'cal-day';
+        day.textContent = d;
+        const key = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        if (eventsMap[key]) day.classList.add('has-event');
+        day.onclick = () => {
+          const ev = eventsMap[key];
+          document.getElementById('eventTag').textContent = ev ? "Milestone Event" : "Daily Log";
+          document.getElementById('eventTitle').textContent = ev ? ev.title : `${monthNames[calMonth]} ${d}, ${calYear}`;
+          document.getElementById('eventDescription').textContent = ev ? ev.desc : "No special milestones scheduled for this date.";
+        };
+        grid.appendChild(day);
+      }
+    }
+    document.getElementById('calPrevBtn').addEventListener('click', () => {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+    document.getElementById('calNextBtn').addEventListener('click', () => {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+
+    // 8. Tasks Checklist
+    let tasks = JSON.parse(localStorage.getItem('kb_tasks')) || [
+      { text: "Cast MAMA daily vote", done: false },
+      { text: "Trace 3 Hangul characters", done: false },
+      { text: "Complete daily pronunciation check", done: false }
+    ];
+
+    function renderTasks() {
+      localStorage.setItem('kb_tasks', JSON.stringify(tasks));
+      const list = document.getElementById('taskList');
+      list.innerHTML = tasks.map((t, i) => `
+        <li class="task-item ${t.done ? 'done' : ''}">
+          <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${i})">
+          <span>${t.text}</span>
+        </li>
+      `).join('');
+    }
+
+    window.toggleTask = function(i) {
+      tasks[i].done = !tasks[i].done;
+      renderTasks();
+    };
+
+    document.getElementById('addTaskBtn').addEventListener('click', () => {
+      const input = document.getElementById('taskInput');
+      const val = input.value.trim();
+      if (!val) return;
+      tasks.push({ text: val, done: false });
+      input.value = '';
+      renderTasks();
+    });
+
+    // Boot App
+    refreshAuthUI();
+    loadCard(false);
+    renderVotes();
+    renderCalendar();
+    renderTasks();
+  </script>
 </body>
-  </html>
+</html>
   
